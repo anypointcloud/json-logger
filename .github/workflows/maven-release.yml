@@ -1,7 +1,7 @@
 name: Release to Maven Central
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   release:
@@ -16,11 +16,11 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-        gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
         server-id: ossrh
-        server-username: ${{ secrets.OSSRH_USERNAME }}
-        server-password: ${{ secrets.OSSRH_PASSWORD }}
+        server-username: ${{ secrets.OSSRH_USERNAME }}
+        server-password: ${{ secrets.OSSRH_PASSWORD }}
 
     - name: Configure Git
       run: |
@@ -39,6 +39,6 @@ jobs:
         gpg: true
 
     - name: Run Maven Release
-      run: mvn release:prepare release:perform -B
+      run: mvn -Prelease-sign-artifacts release:prepare release:perform -B
       env:
         GPG_TTY: $(tty)
