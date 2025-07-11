@@ -83,7 +83,7 @@
                     <runtimeProduct>MULE_EE</runtimeProduct>
                 </configuration>
             </plugin>
-       </plugins>
+        </plugins>
     </build>
 
     <dependencyManagement>
