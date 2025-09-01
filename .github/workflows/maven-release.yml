@@ -18,9 +18,9 @@ jobs:
         distribution: 'temurin'
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
         gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
-        server-id: ossrh
-        server-username: ${{ secrets.OSSRH_USERNAME }}
-        server-password: ${{ secrets.OSSRH_PASSWORD }}
+        server-id: central
+        server-username: ${{ vars.CENTRAL_TOKEN_USERNAME }}
+        server-password: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
 
     - name: Configure Git
       run: |
@@ -32,13 +32,13 @@ jobs:
       with:
         servers: |
           [{
-            "id": "ossrh",
-            "username": "${{ secrets.OSSRH_USERNAME }}",
-            "password": "${{ secrets.OSSRH_PASSWORD }}"
+            "id": "central",
+            "username": "${{ vars.CENTRAL_TOKEN_USERNAME }}",
+            "password": "${{ secrets.CENTRAL_TOKEN_PASSWORD }}"
           }]
         gpg: true
 
     - name: Run Maven Release
       run: mvn -Prelease-sign-artifacts release:prepare release:perform -B
       env:
-        GPG_TTY: $(tty)
+        GPG_TTY: $(tty)
