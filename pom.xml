@@ -175,8 +175,8 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:git@github.com:anypointcloud/json-logger.git</connection>
-        <developerConnection>scm:git:git@github.com:anypointcloud/json-logger.git</developerConnection>
+        <connection>scm:git:https://github.com/anypointcloud/json-logger.git</connection>
+        <developerConnection>scm:git:https://github.com/anypointcloud/json-logger.git</developerConnection>
         <url>https://github.com/anypointcloud/json-logger</url>
         <tag>HEAD</tag>
     </scm>
