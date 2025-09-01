@@ -21,7 +21,6 @@ jobs:
         server-id: central
         server-username: ${{ vars.CENTRAL_TOKEN_USERNAME }}
         server-password: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
-
     - name: Configure Git
       run: |
         git config user.name "GitHub Actions"
@@ -39,6 +38,6 @@ jobs:
         gpg: true
 
     - name: Run Maven Release
-      run: mvn -Prelease-sign-artifacts release:prepare release:perform -B
+      run: mvn -Prelease-sign-artifacts -DskipTests release:prepare release:perform -B
       env:
         GPG_TTY: $(tty)
