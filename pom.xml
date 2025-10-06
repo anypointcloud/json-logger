@@ -142,7 +142,7 @@
         <dependency>
             <groupId>com.mulesoft.muleesb.modules</groupId>
             <artifactId>anypoint-mq-rest-client</artifactId>
-            <version>4.0.18</version>
+            <version>4.0.18-2.W-15572531</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
