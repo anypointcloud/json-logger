@@ -20,6 +20,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@d6af6abeda15e98926a57b5aa970a96bb37f97d1 # version 5
+      with:
+        maven-version: '3.9.6'
+
     - name: maven-settings-action
       uses: s4u/maven-settings-action@894661b3ddae382f1ae8edbeab60987e08cf0788 # commit hash references to v4.0.0
       with:
