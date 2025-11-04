@@ -29,7 +29,7 @@
 
     <properties>
         <munit.extensions.maven.plugin.version>1.6.0</munit.extensions.maven.plugin.version>
-        <munit.version>3.5.0</munit.version>
+        <munit.version>3.6.1</munit.version>
     </properties>
 
     <developers>
