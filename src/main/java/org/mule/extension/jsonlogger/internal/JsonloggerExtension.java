@@ -22,7 +22,7 @@ import org.mule.sdk.api.meta.JavaVersion;
 @Configurations(JsonloggerConfiguration.class)
 @SubTypeMapping(baseType = Destination.class,
         subTypes = {JMSDestination.class, AMQDestination.class, AMQPDestination.class})
-@JavaVersionSupport({JavaVersion.JAVA_11, JavaVersion.JAVA_17})
+@JavaVersionSupport({JavaVersion.JAVA_8, JavaVersion.JAVA_11, JavaVersion.JAVA_17})
 public class JsonloggerExtension {
 
 }
