@@ -1,17 +1,17 @@
 package org.mule.extension.jsonlogger.internal.singleton;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 public class ObjectMapperSingleton {
 
     // JSON Object Mapper
-    private final ObjectMapper om = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//            .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
-//            .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+    private final ObjectMapper om = JsonMapper.builder()
+            .addModule(new Jdk8Module())
+            .serializationInclusion(Include.NON_NULL)
+            .build();
 
     public ObjectMapper getObjectMapper() {
         return this.om;
