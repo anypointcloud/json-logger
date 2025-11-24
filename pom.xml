@@ -140,7 +140,7 @@
         <dependency>
             <groupId>com.mulesoft.connectors</groupId>
             <artifactId>mule-amqp-connector</artifactId>
-            <version>1.8.3</version>
+            <version>1.9.0</version>
             <classifier>mule-plugin</classifier>
             <optional>true</optional>
         </dependency>
