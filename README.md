@@ -75,6 +75,7 @@ If you want to deploy JSON Logger to your organization's Exchange, you need to f
 </distributionManagement>
 ```
 Also make sure, you have your credentials set up in your settings.xml accordingly (matching the repository id in this snippet).
+
 4. Execute `mvn clean deploy`
 
 Please also check these blogposts for more details:
