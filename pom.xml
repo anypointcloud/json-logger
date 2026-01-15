@@ -202,13 +202,6 @@
         </dependency>
     </dependencies>
 
-    <scm>
-        <connection>scm:git:https://github.com/anypointcloud/json-logger.git</connection>
-        <developerConnection>scm:git:https://github.com/anypointcloud/json-logger.git</developerConnection>
-        <url>https://github.com/anypointcloud/json-logger</url>
-        <tag>HEAD</tag>
-    </scm>
-
     <repositories>
         <repository>
             <id>mulesoft-releases</id>
