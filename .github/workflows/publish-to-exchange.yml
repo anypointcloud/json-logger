@@ -1,0 +1,75 @@
+name: Publish JSON Logger to Exchange
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish to Exchange"
+        required: true
+        default: "true"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Configure Maven settings
+        env:
+          MULE_COMMON_MAVEN_SETTINGS_XML: ${{ secrets.MULE_COMMON_MAVEN_SETTINGS_XML }}
+        run: |
+          mkdir -p ~/.m2
+          echo "$MULE_COMMON_MAVEN_SETTINGS_XML" | base64 --decode > ~/.m2/settings.xml
+
+      - name: Extract project coordinates
+        id: project
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          GROUP_ID=$(mvn help:evaluate -Dexpression=project.groupId -q -DforceStdout)
+          ARTIFACT_ID=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "group_id=$GROUP_ID" >> "$GITHUB_OUTPUT"
+          echo "artifact_id=$ARTIFACT_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Check if version exists in Exchange
+        id: version_check
+        run: |
+          set +e
+          mvn dependency:get \
+            -Dartifact=${{ steps.project.outputs.group_id }}:${{ steps.project.outputs.artifact_id }}:${{ steps.project.outputs.version }}:pom \
+            -DremoteRepositories=anypoint-exchange-v3::default::https://maven.anypoint.mulesoft.com/api/v3/organizations/${{ steps.project.outputs.group_id }}/maven \
+            -Dtransitive=false \
+            -U \
+            -s ~/.m2/settings.xml \
+            -q
+          if [ $? -eq 0 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy to Exchange
+        if: steps.version_check.outputs.skip != 'true' && (github.event_name == 'push' || inputs.publish == 'true')
+        run: mvn clean deploy -DskipTests
+
+      - name: Summary
+        run: |
+          {
+            echo "## Publish JSON Logger"
+            echo ""
+            echo "- Group ID: ${{ steps.project.outputs.group_id }}"
+            echo "- Artifact ID: ${{ steps.project.outputs.artifact_id }}"
+            echo "- Version: ${{ steps.project.outputs.version }}"
+            echo "- Skipped (exists): ${{ steps.version_check.outputs.skip }}"
+            echo "- Publish requested: ${{ github.event_name == 'push' || inputs.publish == 'true' }}"
+          } >> "$GITHUB_STEP_SUMMARY"

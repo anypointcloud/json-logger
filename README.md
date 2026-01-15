@@ -2,6 +2,8 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/cloud.anypoint/json-logger)](https://central.sonatype.com/artifact/cloud.anypoint/json-logger/overview)
 
+Aristocrat Exchange: https://anypoint.mulesoft.com/exchange/96afc8e1-e606-4144-8bce-64a35b5e3aa3/aristocrat-mulesoft-json-logger/
+
 Drop-in replacement for default Mule Logger that outputs a JSON structure based on a predefined JSON schema.
 
 ## Why?
@@ -27,8 +29,8 @@ In a nutshell, by defining the output JSON schema as well as providing some addi
 Add this dependency to your application pom.xml
 
 ```
-<groupId>cloud.anypoint</groupId>
-<artifactId>json-logger</artifactId>
+<groupId>96afc8e1-e606-4144-8bce-64a35b5e3aa3</groupId>
+<artifactId>aristocrat-mulesoft-json-logger</artifactId>
 <version>3.1.0</version>
 <classifier>mule-plugin</classifier>
 ```
@@ -38,7 +40,7 @@ If you want to send your logs to Anypoint MQ or a JMS queue, you need to add the
 ### Local Exchange Deployment
 
 If you want to deploy JSON Logger to your organization's Exchange, you need to follow these steps:
-1. Update the `groupId` in pom.xml to the org id of your target business group (instead of `cloud.anypoint`).
+1. Update the `groupId` in pom.xml to the org id of your target business group (this repo already uses the Aristocrat org id).
 2. Add the Exchange Mule Maven Plugin to the plugins section of your pom.xml (don't forget to add a suitable version number, e.g., `0.0.23` as of the time of writing):
 ```
 <plugin>
@@ -77,6 +79,25 @@ If you want to deploy JSON Logger to your organization's Exchange, you need to f
 Also make sure, you have your credentials set up in your settings.xml accordingly (matching the repository id in this snippet).
 
 4. Execute `mvn clean deploy`
+
+### GitHub Actions Exchange Publishing
+
+This repository includes a GitHub Actions workflow that publishes JSON Logger to Anypoint Exchange on:
+- Pushes to `main`
+- Manual runs via **Actions → Publish JSON Logger to Exchange**
+
+#### Required Secret
+
+Set the following GitHub Actions secret (organization or repository level):
+
+| Secret | Description |
+|--------|-------------|
+| `MULE_COMMON_MAVEN_SETTINGS_XML` | Base64-encoded Maven `settings.xml` containing Exchange credentials |
+
+The workflow:
+- Extracts the project coordinates from `pom.xml`
+- Checks if the version already exists in Exchange
+- Publishes only when the version is not already available
 
 Please also check these blogposts for more details:
 

@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cloud.anypoint</groupId>
-    <artifactId>json-logger</artifactId>
+    <groupId>96afc8e1-e606-4144-8bce-64a35b5e3aa3</groupId>
+    <artifactId>aristocrat-mulesoft-json-logger</artifactId>
     <version>3.1.1-SNAPSHOT</version>
     <packaging>mule-extension</packaging>
     <name>JSON Logger</name>
@@ -30,6 +30,7 @@
     <properties>
         <munit.extensions.maven.plugin.version>1.6.0</munit.extensions.maven.plugin.version>
         <munit.version>3.5.0</munit.version>
+        <exchange.mule.maven.plugin.version>0.0.23</exchange.mule.maven.plugin.version>
     </properties>
 
     <developers>
@@ -83,6 +84,27 @@
                 <configuration>
                     <runtimeProduct>MULE_EE</runtimeProduct>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>exchange-mule-maven-plugin</artifactId>
+                <version>${exchange.mule.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>exchange-pre-deploy</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exchange-deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -194,6 +216,15 @@
             <url>https://repository.mulesoft.org/releases/</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>anypoint-exchange-v3</id>
+            <name>Anypoint Exchange V3</name>
+            <url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
 
     <profiles>
         <profile>
