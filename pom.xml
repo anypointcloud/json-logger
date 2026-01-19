@@ -134,7 +134,7 @@
         <dependency>
             <groupId>org.mule.connectors</groupId>
             <artifactId>mule-jms-client</artifactId>
-            <version>1.13.24</version>
+            <version>2.0.0</version>
             <optional>true</optional>
         </dependency>
         <dependency>
