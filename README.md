@@ -89,7 +89,7 @@ PART 2: https://blogs.mulesoft.com/dev/api-dev/json-logging-in-mule-4/
 ### 3.1.0 version - Release notes
 
 * Added JSON serializer for JDK 8 datatypes
-* Updated depencendies
+* Updated dependencies
 
 ### 3.0.2 version - Release notes
 
