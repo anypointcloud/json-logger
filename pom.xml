@@ -24,11 +24,11 @@
     <parent>
         <groupId>org.mule.extensions</groupId>
         <artifactId>mule-modules-parent</artifactId>
-        <version>1.6.24</version>
+        <version>1.6.27</version>
     </parent>
 
     <properties>
-        <munit.extensions.maven.plugin.version>1.6.0</munit.extensions.maven.plugin.version>
+        <munit.extensions.maven.plugin.version>1.7.0</munit.extensions.maven.plugin.version>
         <munit.version>3.7.0</munit.version>
     </properties>
 
@@ -80,9 +80,9 @@
             <plugin>
                 <groupId>com.mulesoft.munit</groupId>
                 <artifactId>munit-extensions-maven-plugin</artifactId>
+                <version>${munit.extensions.maven.plugin.version}</version>
                 <configuration>
                     <runtimeProduct>MULE_EE</runtimeProduct>
-                    <muleRuntimeVersion>4.6.24</muleRuntimeVersion>
                 </configuration>
             </plugin>
         </plugins>
