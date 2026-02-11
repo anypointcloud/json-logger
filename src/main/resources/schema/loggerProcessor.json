@@ -24,7 +24,7 @@
       "type": "string",
       "existingJavaType": "org.mule.runtime.extension.api.runtime.parameter.ParameterResolver<org.mule.runtime.api.metadata.TypedValue<java.io.InputStream>>",
       "sdk": {
-        "summary": "NOTE: Writing the entire payload every time across your application can cause serious performance issues",
+        "summary": "No content is logged by default. Provide this field to log specific content, but avoid logging full payloads because it can cause serious performance and security issues.",
         "required": false,
         "isContent": true
       }
