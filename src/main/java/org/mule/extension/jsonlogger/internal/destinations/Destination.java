@@ -1,9 +1,6 @@
 package org.mule.extension.jsonlogger.internal.destinations;
 
-import org.mule.runtime.extension.api.client.ExtensionsClient;
-
 import java.util.ArrayList;
-import java.util.Map;
 
 public interface Destination {
 
