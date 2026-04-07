@@ -2,7 +2,6 @@ package org.mule.extension.jsonlogger.internal.destinations.events;
 
 import com.lmax.disruptor.EventHandler;
 import org.mule.extension.jsonlogger.internal.destinations.Destination;
-import org.mule.extension.jsonlogger.internal.singleton.LogEventSingleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
