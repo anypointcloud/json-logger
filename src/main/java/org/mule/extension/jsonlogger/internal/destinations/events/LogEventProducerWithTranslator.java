@@ -1,7 +1,6 @@
 package org.mule.extension.jsonlogger.internal.destinations.events;
 
 import com.lmax.disruptor.EventTranslatorThreeArg;
-import com.lmax.disruptor.EventTranslatorTwoArg;
 import com.lmax.disruptor.RingBuffer;
 
 public class LogEventProducerWithTranslator {
