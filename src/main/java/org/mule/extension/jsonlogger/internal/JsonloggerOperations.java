@@ -12,6 +12,7 @@ import org.mule.extension.jsonlogger.internal.datamask.JsonMasker;
 import org.mule.extension.jsonlogger.internal.singleton.ConfigsSingleton;
 import org.mule.extension.jsonlogger.internal.singleton.LogEventSingleton;
 import org.mule.extension.jsonlogger.internal.singleton.ObjectMapperSingleton;
+import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.meta.model.operation.ExecutionType;
 import org.mule.runtime.api.metadata.TypedValue;
@@ -72,6 +73,10 @@ public class JsonloggerOperations {
     // Global definition of logger configs so that it's available for scope processor (SDK scope doesn't support passing configurations)
     @Inject
     ConfigsSingleton configs;
+
+    // Mule Registry for fallback config lookup (e.g. during MUnit where ConfigsSingleton may not be populated via initialise())
+    @Inject
+    private Registry registry;
 
     // Transformation Service
     @Inject
@@ -264,6 +269,33 @@ public class JsonloggerOperations {
          * ===================
          **/
 
+        // Resolve config once to avoid repeated map lookups and guard against null
+        JsonloggerConfiguration resolvedConfig = configs.getConfig(configurationRef);
+
+        // Fallback: In MUnit, extension configs are lazily initialized. Registry.lookupByName triggers
+        // this lazy init (which populates ConfigsSingleton via initialise()), then we re-check.
+        if (resolvedConfig == null && registry != null) {
+            LOGGER.debug("ConfigsSingleton returned null for '{}'. Triggering lazy init via Registry lookup...", configurationRef);
+            registry.lookupByName(configurationRef);
+            resolvedConfig = configs.getConfig(configurationRef);
+        }
+
+        if (resolvedConfig == null) {
+            LOGGER.error("JSON Logger configuration '{}' could not be resolved. " +
+                    "Executing scope operations without JSON logging.", configurationRef);
+            operations.process(
+                    result -> {
+                        callback.success(result);
+                    },
+                    (error, previous) -> {
+                        callback.error(error);
+                    });
+            return;
+        }
+
+        // Effectively final for use in lambda expressions
+        final JsonloggerConfiguration config = resolvedConfig;
+
         Long initialTimestamp,loggerTimestamp;
         initialTimestamp = loggerTimestamp = System.currentTimeMillis();
 
@@ -274,7 +306,7 @@ public class JsonloggerOperations {
 
         try {
             // Add cache entry for initial timestamp based on unique EventId
-            initialTimestamp = configs.getConfig(configurationRef).getCachedTimerTimestamp(correlationInfo.getCorrelationId(), initialTimestamp);
+            initialTimestamp = config.getCachedTimerTimestamp(correlationInfo.getCorrelationId(), initialTimestamp);
         } catch (Exception e) {
             LOGGER.error("initialTimestamp could not be retrieved from the cache config. Defaulting to current System.currentTimeMillis()", e);
         }
@@ -285,7 +317,7 @@ public class JsonloggerOperations {
         //config.printTimersKeys();
         if (elapsed == 0) {
             LOGGER.debug("configuring flowListener....");
-            flowListener.onComplete(new TimerRemoverRunnable(correlationInfo.getCorrelationId(), configs.getConfig(configurationRef)));
+            flowListener.onComplete(new TimerRemoverRunnable(correlationInfo.getCorrelationId(), config));
         } else {
             LOGGER.debug("flowListener already configured");
         }
@@ -306,19 +338,19 @@ public class JsonloggerOperations {
             loggerProcessor.put("priority", priority.toString());
             loggerProcessor.put("elapsed", elapsed);
             loggerProcessor.put("scopeElapsed", 0);
-            if (configs.getConfig(configurationRef).getJsonOutput().isLogLocationInfo()) {
+            if (config.getJsonOutput().isLogLocationInfo()) {
                 Map<String, String> locationInfoMap = locationInfoToMap(location);
                 loggerProcessor.putPOJO("locationInfo", locationInfoMap);
             }
             loggerProcessor.put("timestamp", getFormattedTimestamp(loggerTimestamp));
-            loggerProcessor.put("applicationName", configs.getConfig(configurationRef).getGlobalSettings().getApplicationName());
-            loggerProcessor.put("applicationVersion", configs.getConfig(configurationRef).getGlobalSettings().getApplicationVersion());
-            loggerProcessor.put("environment", configs.getConfig(configurationRef).getGlobalSettings().getEnvironment());
+            loggerProcessor.put("applicationName", config.getGlobalSettings().getApplicationName());
+            loggerProcessor.put("applicationVersion", config.getGlobalSettings().getApplicationVersion());
+            loggerProcessor.put("environment", config.getGlobalSettings().getEnvironment());
             loggerProcessor.put("threadName", Thread.currentThread().getName());
 
             // Define JSON output formatting
             // Print Logger
-            String finalLogBefore = printObjectToLog(loggerProcessor, priority.toString(), configs.getConfig(configurationRef).getJsonOutput().isPrettyPrint());
+            String finalLogBefore = printObjectToLog(loggerProcessor, priority.toString(), config.getJsonOutput().isPrettyPrint());
 
             // Added temp variable to comply with lambda
             Long finalInitialTimestamp = initialTimestamp;
@@ -343,11 +375,11 @@ public class JsonloggerOperations {
                         loggerProcessor.put("timestamp", getFormattedTimestamp(endScopeTimestamp));
 
                         // Print Logger
-                        String finalLogAfter = printObjectToLog(loggerProcessor, priority.toString(), configs.getConfig(configurationRef).getJsonOutput().isPrettyPrint());
+                        String finalLogAfter = printObjectToLog(loggerProcessor, priority.toString(), config.getJsonOutput().isPrettyPrint());
 
                         /** Forward Log to External Destination **/
-                        if (configs.getConfig(configurationRef).getExternalDestination() != null) {
-                            publishScopeLogEvents(configurationRef, correlationId, finalLogBefore, finalLogAfter);
+                        if (config.getExternalDestination() != null) {
+                            publishScopeLogEvents(config, configurationRef, correlationId, finalLogBefore, finalLogAfter);
                         }
 
                         callback.success(result);
@@ -370,11 +402,11 @@ public class JsonloggerOperations {
                         loggerProcessor.put("timestamp", getFormattedTimestamp(errorScopeTimestamp));
 
                         // Print Logger
-                        String finalLogError = printObjectToLog(loggerProcessor, "ERROR", configs.getConfig(configurationRef).getJsonOutput().isPrettyPrint());
+                        String finalLogError = printObjectToLog(loggerProcessor, "ERROR", config.getJsonOutput().isPrettyPrint());
 
                         /** Forward Log to External Destination **/
-                        if (configs.getConfig(configurationRef).getExternalDestination() != null) {
-                            publishScopeLogEvents(configurationRef, correlationId, finalLogBefore, finalLogError);
+                        if (config.getExternalDestination() != null) {
+                            publishScopeLogEvents(config, configurationRef, correlationId, finalLogBefore, finalLogError);
                         }
 
                         callback.error(error);
@@ -392,10 +424,10 @@ public class JsonloggerOperations {
         }
     }
 
-    private void publishScopeLogEvents(String configurationRef, String correlationId, String finalLogBefore, String finalLogAfter) {
-        LOGGER.debug("externalDestination.getDestination().getSupportedCategories().isEmpty(): " + configs.getConfig(configurationRef).getExternalDestination().getSupportedCategories().isEmpty());
-        LOGGER.debug("externalDestination.getDestination().getSupportedCategories().contains(jsonLogger.getName()): " + configs.getConfig(configurationRef).getExternalDestination().getSupportedCategories().contains(jsonLogger.getName()));
-        if (configs.getConfig(configurationRef).getExternalDestination().getSupportedCategories().isEmpty() || configs.getConfig(configurationRef).getExternalDestination().getSupportedCategories().contains(jsonLogger.getName())) {
+    private void publishScopeLogEvents(JsonloggerConfiguration config, String configurationRef, String correlationId, String finalLogBefore, String finalLogAfter) {
+        LOGGER.debug("externalDestination.getDestination().getSupportedCategories().isEmpty(): " + config.getExternalDestination().getSupportedCategories().isEmpty());
+        LOGGER.debug("externalDestination.getDestination().getSupportedCategories().contains(jsonLogger.getName()): " + config.getExternalDestination().getSupportedCategories().contains(jsonLogger.getName()));
+        if (config.getExternalDestination().getSupportedCategories().isEmpty() || config.getExternalDestination().getSupportedCategories().contains(jsonLogger.getName())) {
             LOGGER.debug(jsonLogger.getName() + " is a supported category for external destination");
             // Publishing before and after logEvents for better efficiency
             logEvent.publishToExternalDestination(correlationId, finalLogBefore, configurationRef);

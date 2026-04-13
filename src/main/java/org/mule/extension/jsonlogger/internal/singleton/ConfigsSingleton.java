@@ -2,12 +2,12 @@ package org.mule.extension.jsonlogger.internal.singleton;
 
 import org.mule.extension.jsonlogger.internal.JsonloggerConfiguration;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ConfigsSingleton {
 
-    private Map<String, JsonloggerConfiguration> configs = new HashMap<String, JsonloggerConfiguration>();
+    private static final Map<String, JsonloggerConfiguration> configs = new ConcurrentHashMap<>();
 
     public Map<String, JsonloggerConfiguration> getConfigs() {
         return configs;
@@ -18,7 +18,11 @@ public class ConfigsSingleton {
     }
 
     public void addConfig(String configName, JsonloggerConfiguration config) {
-        this.configs.put(configName, config);
+        configs.put(configName, config);
+    }
+
+    public void removeConfig(String configName) {
+        configs.remove(configName);
     }
 
 }

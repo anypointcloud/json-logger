@@ -77,6 +77,7 @@ public class JsonloggerConfiguration extends LoggerConfig implements Initialisab
 
     @Override
     public void dispose() {
+        configsSingleton.removeConfig(configName);
         if (this.externalDestination != null) {
             this.externalDestination.dispose();
         }
