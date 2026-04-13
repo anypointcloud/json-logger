@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.mule.extensions</groupId>
         <artifactId>mule-modules-parent</artifactId>
-        <version>1.6.29</version>
+        <version>1.6.30</version>
     </parent>
 
     <properties>
