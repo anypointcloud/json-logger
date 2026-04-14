@@ -170,7 +170,6 @@ public class AMQDestination implements Destination {
 
     public void initialise() {
         // Start HTTP Configuration
-        Long startTimestamp = System.currentTimeMillis();
         this.httpClientConfiguration = new HttpClientConfiguration.Builder()
                 .setName(AMQ_HTTP_CLIENT)
                 .build();
