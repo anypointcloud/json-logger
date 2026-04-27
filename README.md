@@ -88,8 +88,11 @@ PART 2: https://blogs.mulesoft.com/dev/api-dev/json-logging-in-mule-4/
 
 ### 3.1.1 version - Release notes
 
-* Fixed rare case where use of Logger Scope could lead to NPE in MUnits
+* Improved configuration handling
+* Code quality improvements
+* Updated MUnit tests
 * Updated dependencies
+* Removed indirect dependency on mule-jms-client
 
 ### 3.1.0 version - Release notes
 
