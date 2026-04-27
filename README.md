@@ -86,6 +86,14 @@ PART 2: https://blogs.mulesoft.com/dev/api-dev/json-logging-in-mule-4/
 
 ##  Release notes
 
+### 3.1.1 version - Release notes
+
+* Improved configuration handling
+* Code quality improvements
+* Updated MUnit tests
+* Updated dependencies
+* Removed indirect dependency on mule-jms-client
+
 ### 3.1.0 version - Release notes
 
 * Added JSON serializer for JDK 8 datatypes
