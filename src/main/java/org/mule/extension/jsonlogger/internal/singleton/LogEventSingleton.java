@@ -77,4 +77,8 @@ public class LogEventSingleton implements Initialisable, Disposable {
         this.disruptor.shutdown();
         this.logEventHandler.flushAllLogs();
     }
+
+    public void removeDestinationForConfig(JsonloggerConfiguration jsonloggerConfiguration) {
+        this.destinations.remove(jsonloggerConfiguration.getConfigName());
+    }
 }

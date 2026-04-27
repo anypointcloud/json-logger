@@ -85,5 +85,7 @@ public class JsonloggerConfiguration extends LoggerConfig implements Initialisab
         if (this.externalDestination != null) {
             this.externalDestination.dispose();
         }
+        logEventSingleton.removeDestinationForConfig(this);
+        configsSingleton.removeConfig(configName);
     }
 }
