@@ -1,28 +1,32 @@
-<mule
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
     xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
-    xmlns="http://www.mulesoft.org/schema/mule/core"
     xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
         http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
 
-    <json-logger:config name="JSON_Logger_Config"
-        doc:name="JSON Logger Config"
-        doc:id="d3c3b8c7-8417-4545-9e60-9c914261d272"
+    <json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config" doc:id="d3c3b8c7-8417-4545-9e60-9c914261d272"
         environment="MUnit" />
-    <configuration-properties
-        file="json-logger.properties" />
 
-    <flow name="test-logger"
-        doc:id="457201a2-e5c5-4ac6-ab29-ab63bc517a7b">
-        <set-payload
-            value='#[output application/json --- [{"A": 1, "B": 1}, {"A": 2}]]'
-            doc:name="Test"
-            doc:id="7941661a-16da-4271-9657-1d9580ab4c77" />
+    <configuration-properties file="json-logger.properties" />
+
+    <flow name="test-logger" doc:id="457201a2-e5c5-4ac6-ab29-ab63bc517a7b">
+        <set-payload doc:name="Test" doc:id="df5423e2-0921-4b6f-97e4-4242aecc9488"
+            value='#[output application/json --- [{"A": 1, "B": 1}, {"A": 2}]]' />
         <json-logger:logger doc:name="Logger" doc:id="8909da6b-5806-4001-a9d4-6593ee473743"
-            message="another dummy" config-ref="JSON_Logger_Config" tracePoint="FLOW">
-        </json-logger:logger>
-        <set-payload value="all good" doc:name="all good" doc:id="89ac164e-c37f-4b11-ad47-e30f4be9f09a" />
+            message="another dummy" config-ref="JSON_Logger_Config" tracePoint="FLOW" />
+        <set-payload doc:name="all good" doc:id="89ac164e-c37f-4b11-ad47-e30f4be9f09a"
+            value="all good" />
     </flow>
 
+    <flow name="test-logger-scope" doc:id="3666b578-903c-430a-afec-9f787913cce0">
+        <json-logger:logger-scope doc:name="Logger scope" doc:id="a1b5a1a7-de75-4981-a4e6-4b079ac813fc"
+            configurationRef="JSON_Logger_Config" scopeTracePoint="DATA_TRANSFORM_SCOPE">
+            <set-payload doc:name="Test" doc:id="a2fd4c85-51db-4fd6-9e04-4b4fb2804c8d"
+                value='#[output application/json --- [{"A": 1, "B": 1}, {"A": 2}]]' />
+        </json-logger:logger-scope>
+        <set-payload doc:name="all good" doc:id="77f6a482-dff5-4d24-8da8-c056decd7fbf"
+            value="all good" />
+    </flow>
 </mule>

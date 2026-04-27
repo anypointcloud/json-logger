@@ -6,17 +6,18 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
+
+import org.mule.extension.jsonlogger.internal.JsonloggerConfiguration;
 import org.mule.extension.jsonlogger.internal.destinations.Destination;
 import org.mule.extension.jsonlogger.internal.destinations.events.LogEvent;
 import org.mule.extension.jsonlogger.internal.destinations.events.LogEventHandler;
 import org.mule.runtime.api.lifecycle.Disposable;
 import org.mule.runtime.api.lifecycle.Initialisable;
-import org.mule.runtime.api.lifecycle.InitialisationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 public class LogEventSingleton implements Initialisable, Disposable {
@@ -28,10 +29,7 @@ public class LogEventSingleton implements Initialisable, Disposable {
     // Specify the event wait timeout in milliseconds before dropping the events
     private final Integer WAIT_TIMEOUT = Integer.valueOf(System.getProperty("json.logger.destinations.waittimeout", "100"));
 
-    @Inject
-    ConfigsSingleton configs;
-
-    private HashMap<String, Destination> destinations = new HashMap<String, Destination>();
+    private ConcurrentMap<String, Destination> destinations = new ConcurrentHashMap<String, Destination>();
 
     // Construct the Disruptor
     private Disruptor<LogEvent> disruptor;
@@ -43,12 +41,12 @@ public class LogEventSingleton implements Initialisable, Disposable {
     }
 
     public void publishToExternalDestination(String correlationId, String finalLog, String configName) {
-        LOGGER.debug("Publishing event to ringBuffer for destination type: " + this.destinations.get(configName).getSelectedDestinationType());
+        LOGGER.debug("Publishing event to ringBuffer for config: " + configName);
         ringBuffer.publishEvent(LogEventSingleton::translate, correlationId, finalLog, configName);
     }
 
     @Override
-    public void initialise() throws InitialisationException {
+    public void initialise() {
         LOGGER.debug("Init LogEventSingleton...");
 
         // Define waitStrategy: LiteTimeoutBlockingWaitStrategy avoids "blocking wait" but may cause LogEvent loss
@@ -57,10 +55,6 @@ public class LogEventSingleton implements Initialisable, Disposable {
         // Init disruptor ring buffer
         this.disruptor  = new Disruptor<>(LogEvent::new, BUFFER_SIZE, DaemonThreadFactory.INSTANCE, ProducerType.SINGLE, waitStrategy);
 
-        // Load external destinations
-        configs.getConfigs().forEach(
-                (configName, config) -> this.destinations.put(configName, config.getExternalDestination())
-        );
         this.logEventHandler = new LogEventHandler(this.destinations);
         // Connect the handler with initialized list of destinations
         disruptor.handleEventsWith(logEventHandler);
@@ -71,10 +65,20 @@ public class LogEventSingleton implements Initialisable, Disposable {
         // Get the ring buffer from the Disruptor to be used for publishing.
         this.ringBuffer = disruptor.getRingBuffer();
     }
+    
+    public void addDestinationForConfig(JsonloggerConfiguration config) {
+        if (config.getExternalDestination() != null) {        
+            this.destinations.put(config.getConfigName(), config.getExternalDestination());
+        }
+    }
 
     @Override
     public void dispose() {
         this.disruptor.shutdown();
         this.logEventHandler.flushAllLogs();
+    }
+
+    public void removeDestinationForConfig(JsonloggerConfiguration jsonloggerConfiguration) {
+        this.destinations.remove(jsonloggerConfiguration.getConfigName());
     }
 }

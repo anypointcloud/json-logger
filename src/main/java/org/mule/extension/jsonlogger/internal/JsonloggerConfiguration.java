@@ -3,6 +3,7 @@ package org.mule.extension.jsonlogger.internal;
 import org.mule.extension.jsonlogger.api.pojos.LoggerConfig;
 import org.mule.extension.jsonlogger.internal.destinations.Destination;
 import org.mule.extension.jsonlogger.internal.singleton.ConfigsSingleton;
+import org.mule.extension.jsonlogger.internal.singleton.LogEventSingleton;
 import org.mule.runtime.api.lifecycle.Disposable;
 import org.mule.runtime.api.lifecycle.Initialisable;
 import org.mule.runtime.api.lifecycle.InitialisationException;
@@ -25,6 +26,9 @@ public class JsonloggerConfiguration extends LoggerConfig implements Initialisab
     @Inject
     ConfigsSingleton configsSingleton;
 
+    @Inject
+    LogEventSingleton logEventSingleton;
+    
     @RefName
     private String configName;
 
@@ -73,6 +77,7 @@ public class JsonloggerConfiguration extends LoggerConfig implements Initialisab
             this.externalDestination.initialise();
         }
         configsSingleton.addConfig(configName, this); // Should be refactored once SDK supports passing configs to Scopes
+        logEventSingleton.addDestinationForConfig(this);
     }
 
     @Override
@@ -80,5 +85,7 @@ public class JsonloggerConfiguration extends LoggerConfig implements Initialisab
         if (this.externalDestination != null) {
             this.externalDestination.dispose();
         }
+        logEventSingleton.removeDestinationForConfig(this);
+        configsSingleton.removeConfig(configName);
     }
 }
