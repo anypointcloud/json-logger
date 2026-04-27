@@ -86,6 +86,11 @@ PART 2: https://blogs.mulesoft.com/dev/api-dev/json-logging-in-mule-4/
 
 ##  Release notes
 
+### 3.1.1 version - Release notes
+
+* Fixed rare case where use of Logger Scope could lead to NPE in MUnits
+* Updated dependencies
+
 ### 3.1.0 version - Release notes
 
 * Added JSON serializer for JDK 8 datatypes
