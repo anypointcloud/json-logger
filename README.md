@@ -29,7 +29,7 @@ Add this dependency to your application pom.xml
 ```
 <groupId>cloud.anypoint</groupId>
 <artifactId>json-logger</artifactId>
-<version>3.1.0</version>
+<version>3.1.1</version>
 <classifier>mule-plugin</classifier>
 ```
 
