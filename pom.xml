@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.mule.extensions</groupId>
         <artifactId>mule-modules-parent</artifactId>
-        <version>1.6.31</version>
+        <version>1.6.32</version>
     </parent>
 
     <properties>
@@ -107,7 +107,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>2.21.3</version>
+            <version>2.22.0</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
