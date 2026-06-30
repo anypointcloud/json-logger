@@ -21,7 +21,7 @@ jobs:
           java-version: '11'
 
       - name: GitHub Dependency Review
-        uses: github/dependency-review-action@v2
+        uses: actions/dependency-review-action@v5
 
       - name: Print Maven dependency tree
         run: mvn -B -DskipTests dependency:tree
