@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.mule.extension.jsonlogger.api.pojos.LoggerProcessor;
+import org.mule.extension.jsonlogger.api.pojos.LogType;
 import org.mule.extension.jsonlogger.api.pojos.Priority;
 import org.mule.extension.jsonlogger.api.pojos.ScopeTracePoint;
 import org.mule.extension.jsonlogger.internal.datamask.JsonMasker;
@@ -250,6 +251,7 @@ public class JsonloggerOperations {
     @MediaType("application/json")
     public void loggerScope(@DisplayName("Module configuration") @Example("JSON_Logger_Config") @Summary("Indicate which Global config should be associated with this Scope.") String configurationRef,
                             @Optional(defaultValue="INFO") Priority priority,
+                            @Optional(defaultValue="APPLICATION") @Summary("Classifies the log entry for downstream routing") LogType logType,
                             @Optional(defaultValue="OUTBOUND_REQUEST_SCOPE") ScopeTracePoint scopeTracePoint,
                             @Optional @Summary("If not set, by default will log to the org.mule.extension.jsonlogger.JsonLogger category") String category,
                             @Optional(defaultValue="#[correlationId]") @Placement(tab = "Advanced") String correlationId,
@@ -304,6 +306,7 @@ public class JsonloggerOperations {
             loggerProcessor.put("correlationId", correlationId);
             loggerProcessor.put("tracePoint", scopeTracePoint.toString() + "_BEFORE");
             loggerProcessor.put("priority", priority.toString());
+            loggerProcessor.put("logType", logType.toString());
             loggerProcessor.put("elapsed", elapsed);
             loggerProcessor.put("scopeElapsed", 0);
             if (configs.getConfig(configurationRef).getJsonOutput().isLogLocationInfo()) {

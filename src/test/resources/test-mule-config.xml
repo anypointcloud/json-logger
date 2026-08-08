@@ -20,7 +20,7 @@
             doc:name="Test"
             doc:id="7941661a-16da-4271-9657-1d9580ab4c77" />
         <json-logger:logger doc:name="Logger" doc:id="8909da6b-5806-4001-a9d4-6593ee473743"
-            message="another dummy" config-ref="JSON_Logger_Config" tracePoint="FLOW">
+            message="another dummy" config-ref="JSON_Logger_Config" tracePoint="FLOW" logType="AUDIT">
         </json-logger:logger>
         <set-payload value="all good" doc:name="all good" doc:id="89ac164e-c37f-4b11-ad47-e30f4be9f09a" />
     </flow>

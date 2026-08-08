@@ -64,6 +64,18 @@
       },
       "note": "This field is mandatory. DON'T REMOVE"
     },
+    "logType": {
+      "type": "string",
+      "javaType": "org.mule.extension.jsonlogger.api.pojos.LogType",
+      "enum": [
+        "APPLICATION",
+        "AUDIT"
+      ],
+      "sdk": {
+        "default": "APPLICATION",
+        "summary": "Classifies the log entry for downstream routing"
+      }
+    },
     "category": {
       "type": "string",
       "sdk": {

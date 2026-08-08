@@ -159,6 +159,23 @@ Improvements:
 * Minimized dependency footprint (down from ~23MB to ~13MB)
 * Optimized parsing of TypedValue content fields
 
+## Audit log routing
+
+Both the logger and logger scope operations expose a `logType` input. It defaults to
+`APPLICATION`, so existing configurations remain valid. Set it to `AUDIT` for records
+that the downstream logging pipeline should route to an audit destination:
+
+```xml
+<json-logger:logger
+    config-ref="JSON_Logger_Config"
+    message="Invoice synchronization completed"
+    priority="INFO"
+    logType="AUDIT" />
+```
+
+The emitted JSON contains `"logType":"AUDIT"`. `logType` is intentionally separate
+from `priority`; audit records retain normal Log4j severity and filtering behavior.
+
 ## Authors
 
 * **Andres Ramirez** [Email: andres.ramirez@mulesoft.com] (original version)
