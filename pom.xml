@@ -28,7 +28,7 @@
     </parent>
 
     <properties>
-        <munit.extensions.maven.plugin.version>1.7.0</munit.extensions.maven.plugin.version>
+        <munit.extensions.maven.plugin.version>1.7.1</munit.extensions.maven.plugin.version>
         <munit.version>3.7.3</munit.version>
     </properties>
 
