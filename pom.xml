@@ -139,11 +139,23 @@
             <classifier>mule-plugin</classifier>
             <optional>true</optional>
         </dependency>
+        <!-- Forcing update of amqp-client due to vulnerabilites -->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>[5.33.1,)</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>com.mulesoft.muleesb.modules</groupId>
             <artifactId>anypoint-mq-rest-client</artifactId>
             <version>5.1.1300</version>
-            <scope>compile</scope>
+        </dependency>
+        <!-- Forcing new version due to netty vulnerabilities -->
+        <dependency>
+            <groupId>org.asynchttpclient</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>3.0.13</version>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
