@@ -143,7 +143,12 @@
             <groupId>com.mulesoft.muleesb.modules</groupId>
             <artifactId>anypoint-mq-rest-client</artifactId>
             <version>5.1.1300</version>
-            <scope>compile</scope>
+        </dependency>
+        <!-- Forcing new version due to netty vulnerabilities -->
+        <dependency>
+            <groupId>org.asynchttpclient</groupId>
+            <artifactId>async-http-client</artifactId>
+            <version>3.0.13</version>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
