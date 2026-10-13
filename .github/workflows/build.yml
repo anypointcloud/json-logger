@@ -11,16 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v7
+    - name: Checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v6
+    - name: Setup JDK 17 and Maven 3.9.15
+      uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5 # v1.21.0
       with:
         java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+        java-distribution: 'temurin'
+        maven-version: '3.9.15'
 
-    - name: maven-settings-action
+    - name: Prepare Maven Settings
       uses: s4u/maven-settings-action@894661b3ddae382f1ae8edbeab60987e08cf0788 # commit hash references to v4.0.0
       with:
         servers: '[{"id": "mulesoft-ee-releases", "username": "${env.MULE_REPO_USER}", "password": "${env.MULE_REPO_PASSWORD}"}]'
