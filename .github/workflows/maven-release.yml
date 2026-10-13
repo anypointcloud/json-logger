@@ -10,7 +10,7 @@ jobs:
       contents: write
 
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         persist-credentials: false
@@ -26,6 +26,7 @@ jobs:
         server-id: central
         server-username: ${{ vars.CENTRAL_TOKEN_USERNAME }}
         server-password: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
+
     - name: Configure Git
       run: |
         git config user.name "GitHub Actions"
@@ -38,7 +39,7 @@ jobs:
       with:
         maven-version: '3.9.15'
 
-    - name: Set up Maven settings.xml
+    - name: Create Maven Settings
       uses: s4u/maven-settings-action@894661b3ddae382f1ae8edbeab60987e08cf0788 # commit hash references to v4.0.0
       with:
         servers: |
