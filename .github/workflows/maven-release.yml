@@ -33,6 +33,11 @@ jobs:
         git config credential.helper 'store --file ~/.git-credentials'
         echo "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
 
+    - name: Setup Maven 3.9.15
+      uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5 # v1.21.0
+      with:
+        maven-version: '3.9.15'
+
     - name: Set up Maven settings.xml
       uses: s4u/maven-settings-action@894661b3ddae382f1ae8edbeab60987e08cf0788 # commit hash references to v4.0.0
       with:
