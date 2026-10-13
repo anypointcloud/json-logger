@@ -21,7 +21,7 @@ jobs:
         cache: maven
 
     - name: Setup Maven 3.9.15
-      uses: s4u/setup-maven-action@v4a02cbd99769e46198135c31d5097c94618ba3f5 # v1.21.0
+      uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5 # v1.21.0
       with:
         maven-version: '3.9.15'
 
