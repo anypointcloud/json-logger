@@ -20,6 +20,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Setup Maven 3.9.15
+      uses: s4u/setup-maven-action@v1.21.0
+      with:
+        maven-version: '3.9.15'
+
     - name: maven-settings-action
       uses: s4u/maven-settings-action@894661b3ddae382f1ae8edbeab60987e08cf0788 # commit hash references to v4.0.0
       with:
