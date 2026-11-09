@@ -127,6 +127,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- Forcing update of guava due to vulnerabilites -->
+        <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <version>[33.7.2,)</version>
+        </dependency>
+        <!-- end of forced guava update -->
         <!-- Forcing update of spring due to vulnerabilites -->
         <dependency>
             <groupId>org.springframework</groupId>
